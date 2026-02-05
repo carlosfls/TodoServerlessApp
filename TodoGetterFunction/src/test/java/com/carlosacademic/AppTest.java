@@ -1,0 +1,10 @@
+package com.carlosacademic;
+
+import org.junit.Test;
+
+public class AppTest {
+  @Test
+  public void successfulResponse() {
+
+  }
+}

@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  TodoServerlessApp
+
+  Sample SAM Template for TodoServerlessApp
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 512
+
+Resources:
+  TodoProcessorQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: TodoProcessorQueue
+
+  TodoGetterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: TodoGetterFunction
+      Handler: com.carlosacademic.App::handleRequest
+      Runtime: java21
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          TODO_QUEUE_URL: !Ref TodoProcessorQueue
+          TODO_API_URL: https://jsonplaceholder.typicode.com/
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt TodoProcessorQueue.QueueName
